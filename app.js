@@ -2,8 +2,8 @@
 // 1. КОНФИГУРАЦИЯ И СОСТОЯНИЕ
 // ==========================================
 
-// Правильные ответы (в продакшене можно захешировать)
-const RIDDLE_ANSWERS = ["ответ1", "ответ2", "ответ3", "ответ4", "ответ5"];
+// Правильные ответы теперь загружаются из файла
+let RIDDLE_ANSWERS = [];
 
 // Даты разблокировки (МСК, декабрь 2026)
 const UNLOCK_DATES = [
@@ -23,49 +23,123 @@ const CHAINS_PRESET = [
     { id: 4, top: '85%', rotate: '5deg' }
 ];
 
-// Состояние игры по умолчанию
+// Состояние игры по умолчанию (убрали поля для времени)
 const DEFAULT_STATE = {
     playerName: "",
     keys: 0,
     solvedRiddles: [false, false, false, false, false],
-    activeChains: [0, 1, 2, 3, 4], // ID цепей, которые сейчас висят
-    devMode: false,
-    isTimeSynced: false,
-    serverTimeOffset: 0
+    activeChains: [0, 1, 2, 3, 4],
+    devMode: false
 };
 
 let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
 let currentRiddleIndex = -1;
 
 // ==========================================
-// 2. РАБОТА С ТОЧНЫМ ВРЕМЕНЕМ (API)
+// 2. ЗАГРУЗКА И РАСШИФРОВКА ОТВЕТОВ
 // ==========================================
 
-async function syncTime() {
+async function loadAnswers() {
     try {
-        const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Moscow');
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
+        // Запрашиваем текстовый файл с сервера
+        const response = await fetch('answers.txt');
+        if (!response.ok) throw new Error('Файл с ответами не найден');
         
-        const serverTime = new Date(data.datetime).getTime();
-        const localTime = Date.now();
+        const encodedText = await response.text();
         
-        state.serverTimeOffset = serverTime - localTime;
-        state.isTimeSynced = true;
-        console.log("Время синхронизировано. Смещение:", state.serverTimeOffset, "мс");
+        // Расшифровываем Base64 обратно в строку и парсим как JSON массив
+        const decodedText = decodeURIComponent(escape(atob(encodedText.trim())));
+        RIDDLE_ANSWERS = JSON.parse(decodedText);
+        
+        console.log("Ответы успешно загружены и расшифрованы.");
     } catch (error) {
-        console.error("Ошибка синхронизации времени. Используем локальное время.", error);
-        state.isTimeSynced = false; 
+        console.error("Не удалось загрузить ответы. Проверьте наличие answers.txt", error);
+        // Если файла нет, ставим заглушки, чтобы игра не сломалась
+        RIDDLE_ANSWERS = ["ответ1", "ответ2", "ответ3", "ответ4", "ответ5"];
     }
-    updateUI();
 }
 
-function getCurrentServerTime() {
-    if (state.devMode) return Infinity;
-    if (!state.isTimeSynced) return Date.now();
-    return Date.now() + state.serverTimeOffset;
-}
+// ==========================================
+// 3. ЛОГИКА ИНТЕРФЕЙСА (РЕНДЕР)
+// ==========================================
 
+function updateUI() {
+    // Ключи
+    document.getElementById('keyCount').innerText = state.keys;
+    
+    // Профиль
+    document.getElementById('profileNameDisplay').innerText = state.playerName || "Не задано";
+    const profileBtn = document.getElementById('profileBtn');
+    profileBtn.innerText = state.playerName ? state.playerName.charAt(0).toUpperCase() : "?";
+
+    // Кнопки загадок
+    const container = document.getElementById('riddlesContainer');
+    container.innerHTML = '';
+    
+    // ТЕПЕРЬ ИСПОЛЬЗУЕМ ЛОКАЛЬНОЕ ВРЕМЯ ПК (или Infinity для теста)
+    const currentTime = state.devMode ? Infinity : Date.now();
+
+    for (let i = 0; i < 5; i++) {
+        const isUnlocked = currentTime >= UNLOCK_DATES[i];
+        const isSolved = state.solvedRiddles[i];
+
+        const btnWrapper = document.createElement('div');
+        btnWrapper.className = 'riddle-btn-container';
+
+        const btn = document.createElement('button');
+        btn.className = 'riddle-btn';
+        btn.innerHTML = `Кнопка с загадкой ${i + 1}`;
+        
+        if (isSolved) {
+            btn.innerHTML += " ✅";
+            btn.disabled = true;
+        } else if (!isUnlocked) {
+            btn.disabled = true;
+        } else {
+            btn.onclick = () => openRiddle(i);
+        }
+        btnWrapper.appendChild(btn);
+
+        if (!isUnlocked) {
+            const lock = document.createElement('div');
+            lock.className = 'lock-icon';
+            lock.innerHTML = '🔒';
+            lock.title="Время для этой загадки еще не наступило!";
+            btnWrapper.appendChild(lock);
+        }
+
+        container.appendChild(btnWrapper);
+    }
+
+    // Цепи
+    const chainsContainer = document.getElementById('chainsContainer');
+    chainsContainer.innerHTML = '';
+    
+    CHAINS_PRESET.forEach(chainDef => {
+        if (state.activeChains.includes(chainDef.id)) {
+            const chain = document.createElement('div');
+            chain.className = 'chain';
+            chain.style.top = chainDef.top;
+            chain.style.transform = `rotate(${chainDef.rotate})`;
+            chain.onclick = () => removeChain(chainDef.id);
+            chainsContainer.appendChild(chain);
+        }
+    });
+
+    // Состояние двери
+    const door = document.getElementById('doorBtn');
+    const isDoorOpen = state.activeChains.length === 0;
+    
+    if (isDoorOpen) {
+        door.style.backgroundColor = '#4CAF50';
+        door.style.cursor = 'pointer';
+        door.onclick = () => alert("Дверь открыта! Перевод на следующую страницу (в разработке).");
+    } else {
+        door.style.backgroundColor = 'var(--door-color)';
+        door.style.cursor = 'default';
+        door.onclick = null;
+    }
+}
 // ==========================================
 // 3. ЛОГИКА ИНТЕРФЕЙСА (РЕНДЕР)
 // ==========================================
@@ -208,8 +282,6 @@ function removeChain(chainId) {
 
 function saveState() {
     const stateToSave = { ...state };
-    delete stateToSave.isTimeSynced;
-    delete stateToSave.serverTimeOffset;
     localStorage.setItem('questState', JSON.stringify(stateToSave));
 }
 
@@ -231,8 +303,6 @@ function loadState() {
 
 function exportData() {
     const stateToExport = { ...state };
-    delete stateToExport.isTimeSynced;
-    delete stateToExport.serverTimeOffset;
     
     const dataStr = JSON.stringify(stateToExport);
     const encodedData = btoa(unescape(encodeURIComponent(dataStr))); 
@@ -333,6 +403,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Инициализация
-    loadState();
-    syncTime();
+    // Загружаем состояние, ответы и только потом обновляем интерфейс
+    (async () => {
+        loadState();
+        await loadAnswers();
+        updateUI();
+    })();
 });
