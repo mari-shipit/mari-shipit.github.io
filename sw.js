@@ -6,7 +6,7 @@ const urlsToCache = [
   '/index.html',
   '/style.css',
   '/app.js',
-  '/illustration.webp', 
+  '/Illustration.webp', 
   '/manifest.json',
   // '/icon-192x192.webp',
   // '/icon-512x512.webp',
