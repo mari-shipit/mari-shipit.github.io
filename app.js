@@ -215,8 +215,8 @@ function triggerDoorOpen() {
     doorOpen.classList.add('show');
 
     // 2. Воспроизводим звук (раскомментируй, когда добавишь файл)
-    // const audio = new Audio('door-creak.mp3');
-    // audio.play().catch(e => console.log("Аудио заблокировано браузером:", e));
+    const audio = new Audio('door-creak.mp3');
+     audio.play().catch(e => console.log("Аудио заблокировано браузером:", e));
 
     // 3. Ждем 1.5 секунды и переводим на новую страницу
     setTimeout(() => {
