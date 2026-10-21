@@ -66,6 +66,9 @@ main {
     flex-direction: column;
     gap: 15px;
     width: 40%;
+    position: relative;
+    z-index: 20; /* Поднимаем кнопки над фонарем и фоном */
+    margin-left: 5vw; /* Чуть отодвинем от края для красоты */
 }
 
 .riddle-btn-container {
@@ -115,33 +118,47 @@ main {
 }
 
 .door-container {
-    width: 20vw;
-    height: 70vh;
+    aspect-ratio: 1619 / 3200;
+    height: 65vh;
     position: relative;
     margin-bottom: 40px; /* Место для ступеньки */
 }
 
-.door-base {
+.door-image {
     width: 100%;
     height: 100%;
-    background-color: var(--door-color);
     position: absolute;
     bottom: 0;
     left: 0;
-    cursor: pointer;
-    border: 2px solid #777;
-    transition: background-color 0.3s;
+    object-fit: contain;
+    border: none;
+    background: transparent;
+    transition: filter 0.5s ease, opacity 0.5s ease; /* Плавное затемнение и появление */
+    z-index: 1;
 }
 
-.door-base::after {
-    content: "Дверь";
+/* Класс, когда дверь "открыта" (для закрытой картинки) */
+.door-image.is-black {
+    filter: brightness(0); /* Превращаем в черный силуэт (проем) */
+    cursor: pointer;
+}
+
+/* Скрываем открытую дверь по умолчанию */
+.door-open-img {
+    opacity: 0;
+    pointer-events: none; /* Чтобы не перекрывала клики, пока скрыта */
+    z-index: 2; /* Поверх черного проема */
+}
+
+/* Класс для появления открытой двери */
+.door-open-img.show {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #555;
-    font-weight: bold;
-    font-size: 20px;
+    opacity: 2;
+    pointer-events: auto;
+    filter: drop-shadow(0px 0px 20px rgba(255, 215, 0, 0.4));
+    height: 110%;
+    bottom: -4%;
+    left: 23%;
 }
 
 .door-step {
@@ -151,7 +168,7 @@ main {
     position: absolute;
     bottom: -7vh;
     right: -19vw;
-    z-index: -1;
+    z-index: 1;
 }
 
 /* Цепи */
@@ -162,6 +179,7 @@ main {
     left: -50px;
     width: calc(100% + 100px); /* Контейнер чуть шире двери, чтобы цепи выступали */
     height: 100%;
+        z-index: 1;
     pointer-events: none;
 }
 
@@ -330,4 +348,7 @@ button:hover { opacity: 0.8; }
     z-index: 6;
     align-items: baseline;
     flex-direction: row-reverse;
+}
+@media (aspect-ratio: 1045/645){
+
 }

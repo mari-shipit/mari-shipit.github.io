@@ -126,18 +126,23 @@ function updateUI() {
         }
     });
 
-    // Состояние двери
-    const door = document.getElementById('doorBtn');
-    const isDoorOpen = state.activeChains.length === 0;
-    
-    if (isDoorOpen) {
-        door.style.backgroundColor = '#4CAF50';
-        door.style.cursor = 'pointer';
-        door.onclick = () => alert("Дверь открыта! Перевод на следующую страницу (в разработке).");
+        // Состояние двери
+    const doorClosed = document.getElementById('doorClosed');
+    const doorOpen = document.getElementById('doorOpen');
+    const isDoorUnlocked = state.activeChains.length === 0;
+
+    if (isDoorUnlocked) {
+        // Цепей нет: делаем закрытую дверь черным проемом
+        
+        // Назначаем клик на проем, чтобы открыть дверь
+        doorClosed.onclick = triggerDoorOpen;
     } else {
-        door.style.backgroundColor = 'var(--door-color)';
-        door.style.cursor = 'default';
-        door.onclick = null;
+        // Цепи есть: возвращаем нормальный вид (на случай дебаг-сброса)
+        doorClosed.classList.remove('is-black');
+        doorClosed.onclick = null;
+        
+        // Прячем открытую дверь обратно
+        doorOpen.classList.remove('show');
     }
 }
 
@@ -194,7 +199,32 @@ function removeChain(chainId) {
         alert("У вас нет ключей! Разгадайте загадки.");
     }
 }
+// ==========================================
+// 5.5. ОТКРЫТИЕ ДВЕРИ И ПЕРЕХОД
+// ==========================================
 
+function triggerDoorOpen() {
+    const doorClosed = document.getElementById('doorClosed');
+    const doorOpen = document.getElementById('doorOpen');
+
+    // Защита от повторного клика
+    doorClosed.onclick = null; 
+
+    // 1. Показываем открытую дверь
+    doorClosed.classList.add('is-black');
+    doorOpen.classList.add('show');
+
+    // 2. Воспроизводим звук (раскомментируй, когда добавишь файл)
+    // const audio = new Audio('door-creak.mp3');
+    // audio.play().catch(e => console.log("Аудио заблокировано браузером:", e));
+
+    // 3. Ждем 1.5 секунды и переводим на новую страницу
+    setTimeout(() => {
+        alert("Дверь открыта! Перевод на следующую страницу (в разработке).");
+        
+        // window.location.href = 'next-page.html'; // Раскомментируй, когда будет страница
+    }, 1500);
+}
 // ==========================================
 // 6. СОХРАНЕНИЕ, ЭКСПОРТ И ИМПОРТ
 // ==========================================

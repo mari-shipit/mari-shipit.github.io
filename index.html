@@ -35,9 +35,15 @@
 
         <!-- Правая панель: Дверь и цепи -->
         <div class="right-panel">
-            <div class="door-container">
-                <div class="door-base" id="doorBtn"></div>
+                                    <div class="door-container">
+                <!-- 1. Дверь (закрытая/превращается в проем) -->
+                <img src="door-closed.png" alt="Закрытая дверь" class="door-image" id="doorClosed">
+                
+                <!-- 2. Открытая дверь (изначально скрыта) -->
+                <img src="door-open.png" alt="Открытая дверь" class="door-image door-open-img" id="doorOpen">
+                
                 <div class="door-step"></div>
+                
                 <div class="chains-container" id="chainsContainer">
                     <!-- Цепи генерируются в app.js -->
                 </div>
