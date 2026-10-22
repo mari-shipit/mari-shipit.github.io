@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
+     <div class="dark-beam" ></div>
+     <div class="snowblock"></div>
  <script>
  if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -54,8 +56,7 @@
              <div class="lamp">
             <img id="lamp" src="lamp.webp"; alt="Фонарный столб. А вы что ждали?">
              <div class="light-beam"></div>
-            <div class="dark-beam" id="left"></div>
-        <div class="dark-beam" id="right"></div>
+        
     <div class="key-counter">
             <span class="key-icon">🗝️</span> × <span id="keyCount">0</span>
         </div>
@@ -64,6 +65,7 @@
         
         <!-- Скрытая кнопка для тестировщиков -->
         <div class="hidden-dev-trigger" id="devTrigger" title="Кнопка для тестов"></div>
+        
     </main>
 
     <!-- Модальное окно: Загадка -->
