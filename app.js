@@ -313,7 +313,15 @@ document.addEventListener('DOMContentLoaded', () => {
         saveState();
         updateUI();
     };
-
+ document.getElementById('nameInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            state.playerName = document.getElementById('nameInput').value.trim();
+            document.getElementById('profileModal').style.display = 'none';
+            saveState();
+            updateUI();
+            
+        }
+    });
     document.getElementById('exportBtn').onclick = exportData;
     document.getElementById('importBtn').onclick = () => document.getElementById('importFile').click();
     document.getElementById('importFile').onchange = (e) => {
