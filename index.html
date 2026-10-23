@@ -24,22 +24,32 @@
   });
 }
 </script>
-    <header>
+        <header>
         <button class="logo-btn" id="profileBtn">?</button>
-        <div class="title">"Таинственное название сайта"</div>
+        <div class="title">"Проделки Гринча"</div>
+        <!-- Кнопка меню для мобильных -->
+        <button class="burger-btn" id="burgerBtn">
+            <span></span><span></span><span></span>
+        </button>
     </header>
 
-    <main>
-       
- 
-        <!-- Левая панель: Загадки -->
-        <div class="left-panel" id="riddlesContainer">
-            <!-- Кнопки генерируются в app.js -->
+        <main>
+          <!-- Контейнер для вывески -->
+        <div class="left-panel-wrapper">
+            <!-- Левая цепь -->
+            <div class="hanging-chain left-chain"></div>
+            <!-- Правая цепь -->
+            <div class="hanging-chain right-chain"></div>
+            
+            <!-- Сама вывеска -->
+            <div class="left-panel" id="riddlesContainer">
+                <!-- Кнопки генерируются в app.js -->
+            </div>
         </div>
 
-        <!-- Правая панель: Дверь и цепи -->
+        <!-- Правая панель: Дверь, Фонарь и Свет -->
         <div class="right-panel">
-                                    <div class="door-container">
+            <div class="door-container">
                 <!-- 1. Дверь (закрытая/превращается в проем) -->
                 <img src="door-closed.webp" alt="Закрытая дверь" class="door-image" id="doorClosed">
                 
@@ -51,20 +61,20 @@
                 <div class="chains-container" id="chainsContainer">
                     <!-- Цепи генерируются в app.js -->
                 </div>
+
+                <!-- ФОНАРЬ И СВЕТ ТЕПЕРЬ ВНУТРИ ДВЕРИ -->
+                <div class="lamp">
+                    <img id="lampImg" src="lamp.webp" alt="Фонарь">
+                    <div class="light-beam"></div>
+                    <div class="key-counter">
+                        <span class="key-icon">🗝️</span> × <span id="keyCount">0</span>
+                    </div>
+                </div>
             </div>
-             <div class="lamp">
-            <img id="lamp" src="lamp.webp"; alt="Фонарный столб. А вы что ждали?">
-             <div class="light-beam"></div>
-        
-    <div class="key-counter">
-            <span class="key-icon">🗝️</span> × <span id="keyCount">0</span>
-        </div>
-        </div>
         </div>
         
         <!-- Скрытая кнопка для тестировщиков -->
         <div class="hidden-dev-trigger" id="devTrigger" title="Кнопка для тестов"></div>
-        
     </main>
 
     <!-- Модальное окно: Загадка -->
