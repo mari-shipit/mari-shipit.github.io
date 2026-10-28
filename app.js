@@ -294,16 +294,6 @@ function importData(file) {
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-            // Логика для мобильного меню (бургер)
-    const burgerBtn = document.getElementById('burgerBtn');
-    const panelWrapper = document.querySelector('.left-panel-wrapper'); // Ищем обертку
-
-    if (burgerBtn && panelWrapper) {
-        burgerBtn.addEventListener('click', () => {
-            // Переключаем класс active у ОБЕРТКИ
-            panelWrapper.classList.toggle('active');
-        });
-    }
     // Загадки
     document.getElementById('submitRiddleBtn').onclick = submitRiddle;
     document.getElementById('closeRiddleBtn').onclick = () => {
