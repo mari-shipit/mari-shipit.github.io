@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комната с сундуком</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body class="room-body">
+    
+    <div class="room-container">
+        <!-- Изначально показываем сундук (или комнату с открытым сундуком) -->
+        <div class="chest-view active" id="chestView">
+            <!-- Сюда вставишь картинку комнаты/сундука (пока заглушка) -->
+            <img src="room.webp" alt="Сундук" class="room-image" id="chestImg">
+            <button class="bottom-btn" onclick="alert('Здесь будет переход куда-то дальше...')">Дальше</button>
+        </div>
+
+        <!-- Вид письма -->
+                <!-- Вид 2: Письмо -->
+        <div class="letter-view" id="letterView">
+            <!-- Заглушка вместо картинки письма -->
+            <div class="room-image">
+                [ЗДЕСЬ БУДЕТ КАРТИНКА ПИСЬМА]
+            </div>
+            
+            <!-- Кнопка "Отложить" (крестик) -->
+            <button class="close-letter-btn" id="closeLetterBtn" title="Отложить письмо">
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Кнопка-печать -->
+            <button class="wax-seal-btn" id="waxSealBtn">Печать</button>
+        </div>
+
+        <!-- Кнопка-заглушка снизу (по дизайну как devTrigger) -->
+    </div>
+
+    <!-- Модальное окно для ввода имени предателя -->
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal-content">
+            <h2>Введите имя</h2>
+            <p>Кто украл подарок?</p>
+            <input type="text" id="traitorNameInput" placeholder="Имя предателя..." autocomplete="off">
+            <div class="error-msg" id="nameError"></div>
+            <button id="submitNameBtn">Проверить</button>
+            <button id="closeNameBtn" class="btn-secondary">Отмена</button>
+        </div>
+    </div>
+
+    <script src="room.js"></script>
+</body>
+</html>
