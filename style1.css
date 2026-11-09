@@ -3,7 +3,7 @@
    ========================================== */
 
 body {
-    background-color: #1a1a1a; /* Темный фон */
+    background-color: #9c9c9c; /* Темный фон */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,8 +20,17 @@ body {
 }
 #chestImg{
     width: 350px;
-    height: 200px;
-    background-color: #c4b9ad;
+    height: auto;
+}
+.room-image::after{
+    content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 0, 150, 0.5), rgba(0, 204, 255, 0.5));
+  pointer-events: none; /* чтобы клики проходили сквозь градиент */
 }
 .room-container {
     position: relative;
@@ -35,9 +44,7 @@ body {
 /* Управление видимостью */
 .chest-view, .letter-view {
     display: none; 
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    bottom: 25%;
     position: absolute;
 }
 
@@ -213,4 +220,25 @@ body {
 
 .close-letter-btn span:nth-child(2) {
     transform: rotate(-45deg);
+}
+.floor{
+    position: absolute;
+    width: 100vw;
+    height: 35%;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+}
+.walls{
+        position: absolute;
+    width: 100vw;
+    height: 100%;
+
+    pointer-events: none;
+}
+.room{
+     height: 100%;
+    width: 100%;
+    display: grid;
+    justify-content: center;
+    align-items: end;
 }

@@ -88,7 +88,7 @@ function updateUI() {
 
         const btn = document.createElement('button');
         btn.className = 'riddle-btn';
-        btn.innerHTML = `Кнопка с загадкой ${i + 1}`;
+        btn.innerHTML = `Загадка ${i + 1}`;
         
         if (isSolved) {
             btn.innerHTML += " ✅";
