@@ -1,9 +1,13 @@
-/* ==========================================
-   СТИЛИ ДЛЯ КОМНАТЫ (room.html)
-   ========================================== */
+/* ==========================================================
+   КОМНАТА (room.html)
+   ========================================================== */
+
+@keyframes modalPop {
+    from { opacity: 0; transform: translateY(12px) scale(0.96); }
+    to   { opacity: 1; transform: none; }
+}
 
 body {
-    background-color: #9c9c9c; /* Темный фон */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,26 +16,31 @@ body {
     overflow: hidden;
     font-family: 'Courier New', Courier, monospace;
     color: white;
+    background-color: #8f8f8f;
 }
-#letterView{
-    width: 700px;
-    height: 350px;
-    background-color: #c4b9ad;
+
+/* ---------- Комната (пол, потолок, стены) ---------- */
+.room {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    justify-content: center;
+    align-items: end;
 }
-#chestImg{
-    width: 350px;
-    height: auto;
+.floor {
+    position: absolute;
+    width: 100vw;
+    height: 35%;
+    mix-blend-mode: multiply;
+    pointer-events: none;
 }
-.room-image::after{
-    content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(255, 0, 150, 0.5), rgba(0, 204, 255, 0.5));
-  pointer-events: none; /* чтобы клики проходили сквозь градиент */
+.walls {
+    position: absolute;
+    width: 100vw;
+    height: 100%;
+    pointer-events: none;
 }
+
 .room-container {
     position: relative;
     width: 100%;
@@ -41,171 +50,94 @@ body {
     align-items: center;
 }
 
-/* Управление видимостью */
-.chest-view, .letter-view {
-    display: none; 
+/* ---------- Переключение видов: сундук / конверт ---------- */
+.chest-view,
+.letter-view {
+    display: none;
+    position: absolute;
     bottom: 25%;
-    position: absolute;
+}
+.chest-view.active,
+.letter-view.active { display: flex; }
+
+#chestImg {
+    width: 350px;
+    height: auto;
 }
 
-.chest-view.active, .letter-view.active {
-    display: flex; 
-}
-
-/* Заглушки вместо картинок */
-.placeholder-img {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: rgba(255,255,255,0.5);
-    font-weight: bold;
-    border: 2px dashed rgba(255,255,255,0.3);
-    transition: transform 0.3s ease;
-}
-
-/* Заглушка для сундука (комнаты) */
-.chest-box {
-    width: 60vw;
-    height: 50vh;
-    background-color: #444; /* Серый прямоугольник */
-    cursor: pointer;
-}
-
-.chest-box:hover {
-    transform: scale(1.02);
-}
-
-
-/* Кнопка-печать (накладываем на письмо) */
-.wax-seal-btn {
-    position: absolute;
-    bottom: 20%; 
-    left: 45%;
-    
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: #8b0000; 
-    border: 3px solid #5a0000;
-    color: #ffd700; 
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-    transition: transform 0.2s;
-    z-index: 10;
-}
-
-.wax-seal-btn:hover {
-    /* Увеличиваем на 5% */
-    transform: scale(1.05); 
-    
-    /* Добавляем золотистое свечение вокруг печати, сохраняя её обычную черную/красную тень */
-    box-shadow: 0 4px 15px rgba(109, 51, 13, 0.6), /* Золотистое сияние */
-                0 4px 10px rgba(0,0,0,0.6);       /* Оригинальная темная тень для объема */
-                
-    /* Чтобы свечение появлялось плавно */
-    transition: transform 0.2s, box-shadow 0.3s ease-in-out;
-}
-
-/* Кнопка "Дальше" внизу */
+/* Записка рядом с сундуком */
 .bottom-btn {
     position: absolute;
     bottom: -68px;
     left: 78%;
     transform: translateX(-50%);
-    padding: 10px 30px;
-    background-color: #333;
-    color: white;
-    border: 1px solid #777;
-    border-radius: 5px;
-    cursor: pointer;
-    opacity: 0.3;
-    transition: opacity 0.3s;
-}
-
-.bottom-btn:hover {
-    opacity: 1;
-}
-
-/* Стили для модального окна (ввода имени) */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-}
-
-.modal-content {
-    background: white;
-    color: black;
-    padding: 30px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.modal-content input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin: 15px 0;
-    font-size: 16px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-}
-
-.modal-content button {
-    padding: 10px 20px;
-    background: #111;
-    color: white;
+    width: 90px;
+    padding: 0;
+    background: none;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    margin: 5px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+    transition: transform 0.2s, filter 0.2s;
+}
+.bottom-btn img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.bottom-btn:hover {
+    transform: translateX(-50%) scale(1.08);
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.6));
 }
 
-.btn-secondary {
-    background: #666 !important;
+/* ---------- Конверт ---------- */
+#letterView {
+    width: 700px;
+    height: 350px;
+    background-color: #c4b9ad;
 }
 
-.error-msg { 
-    color: red; 
-    font-weight: bold; 
-    margin-top: 10px; 
-    height: 20px; 
+.wax-seal-btn {
+    position: absolute;
+    bottom: 20%;
+    left: 45%;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #8b0000;
+    border: 3px solid #5a0000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s ease-in-out;
+    z-index: 10;
 }
-/* Кнопка закрытия письма (крестик) */
+.wax-seal-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(109, 51, 13, 0.6),
+                0 4px 10px rgba(0,0,0,0.6);
+}
+
+/* Крестик (закрытие письма / окна письма) */
 .close-letter-btn {
     position: absolute;
-    top: -15px;  /* Выносим чуть выше письма */
-    right: -15px; /* Выносим чуть правее письма */
-    
+    top: -15px;
+    right: -15px;
     width: 40px;
     height: 40px;
-    background-color: #111; /* Черный фон, как в референсе */
-    border: 2px solid #555;
-    border-radius: 4px;
-    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 20;
-    transition: background-color 0.2s, transform 0.2s;
+    background-color: #111;
+    border: 2px solid #555;
+    border-radius: 4px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    z-index: 20;
 }
-
 .close-letter-btn:hover {
-    background-color: #8b0000; /* При наведении становится красным */
+    background-color: #8b0000;
     transform: scale(1.1);
 }
-
-/* Рисуем сам крестик из двух полосок */
 .close-letter-btn span {
     position: absolute;
     width: 20px;
@@ -213,32 +145,159 @@ body {
     background-color: white;
     border-radius: 2px;
 }
+.close-letter-btn span:nth-child(1) { transform: rotate(45deg); }
+.close-letter-btn span:nth-child(2) { transform: rotate(-45deg); }
 
-.close-letter-btn span:nth-child(1) {
-    transform: rotate(45deg);
-}
-
-.close-letter-btn span:nth-child(2) {
-    transform: rotate(-45deg);
-}
-.floor{
-    position: absolute;
-    width: 100vw;
-    height: 35%;
-    mix-blend-mode: multiply;
-    pointer-events: none;
-}
-.walls{
-        position: absolute;
-    width: 100vw;
-    height: 100%;
-
-    pointer-events: none;
-}
-.room{
-     height: 100%;
-    width: 100%;
-    display: grid;
+/* ==========================================================
+   ОКНА
+   ========================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
     justify-content: center;
-    align-items: end;
+    align-items: center;
+    background: rgba(0,0,0,0.8);
+    z-index: 100;
+}
+#nameModal { backdrop-filter: blur(3px); }
+
+/* ---------- Окно с запиской ---------- */
+.letter-modal {
+    position: relative;
+    width: 90%;
+    max-width: 560px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    color: #3b2a1a;
+    background: #e8dcc3;
+    border: 3px solid #5c3a21;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+.letter-scroll {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 30px 28px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.6;
+    text-align: left;
+}
+.letter-scroll p { margin: 0 0 1em; }
+.letter-scroll p:last-child { margin-bottom: 0; }
+
+/* ---------- Окно ввода имени ---------- */
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 420px;
+    padding: 34px 30px 28px;
+    text-align: center;
+    color: #3b2a1a;
+    font-family: Georgia, 'Times New Roman', serif;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.35), transparent 70%),
+        #e8dcc3;
+    border: 3px solid #5c3a21;
+    border-radius: 8px;
+    box-shadow:
+        0 12px 40px rgba(0,0,0,0.7),
+        inset 0 0 0 6px #e8dcc3,
+        inset 0 0 0 7px rgba(92,58,33,0.55),
+        inset 0 0 40px rgba(92,58,33,0.25);
+    animation: modalPop 0.25s ease-out;
+}
+
+.modal-content h2 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #3b2a1a;
+}
+.modal-content h2::after {
+    content: "✦";
+    display: block;
+    margin-top: 6px;
+    font-size: 14px;
+    letter-spacing: 0;
+    color: #8b0000;
+}
+
+.modal-content p {
+    margin: 10px 0 0;
+    font-size: 18px;
+    font-style: italic;
+    color: #5c3a21;
+}
+
+.modal-content input[type="text"] {
+    width: 90%;
+    margin: 18px 0 6px;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 18px;
+    text-align: center;
+    color: #3b2a1a;
+    background: rgba(255,255,255,0.45);
+    border: 2px solid #8a6a4a;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.modal-content input[type="text"]::placeholder {
+    color: rgba(59,42,26,0.45);
+    font-style: italic;
+}
+.modal-content input[type="text"]:focus {
+    background: rgba(255,255,255,0.7);
+    border-color: #8b0000;
+    box-shadow: 0 0 0 3px rgba(139,0,0,0.18);
+}
+
+.error-msg {
+    min-height: 22px;
+    margin: 6px 0 12px;
+    font-size: 16px;
+    font-style: italic;
+    color: #8b0000;
+}
+
+.modal-content button {
+    margin: 4px 6px;
+    padding: 11px 24px;
+    font-family: inherit;
+    font-size: 17px;
+    letter-spacing: 1px;
+    color: #f5e9d0;
+    background: radial-gradient(circle at 35% 30%, #b01818, #7a0000 70%);
+    border: 2px solid #4a0000;
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.45);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+}
+.modal-content button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.15);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.5);
+}
+.modal-content button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+
+.modal-content .btn-secondary {
+    color: #5c3a21;
+    background: transparent;
+    border: 2px solid #8a6a4a;
+    box-shadow: none;
+}
+.modal-content .btn-secondary:hover {
+    background: rgba(92,58,33,0.12);
+    box-shadow: none;
 }

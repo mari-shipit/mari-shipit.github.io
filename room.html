@@ -9,17 +9,26 @@
 <body class="room-body">
     
     <div class="room-container">
-        <div class="room">
-             <div class="floor" style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);background: linear-gradient(31deg, rgb(101 75 61 / 83%) 0%, rgba(101 75 61 / 51%) 60%, rgba(255, 176, 123, 0) 100%);"></div>
-             <div class="floor"style="height:100%;clip-path: polygon(0% 0%, 100% 0%, 85% 15%, 15% 15%);background: linear-gradient(31deg, rgb(101 75 61 / 83%) 0%, rgba(101 75 61 / 51%) 60%, rgba(255, 176, 123, 0) 100%);"></div>
-             <div class="walls" style="clip-path: polygon(0% 0%, 15% 15%, 15% 65%, 0% 100%);background: linear-gradient(31deg, rgb(101 75 61 / 83%) 0%, rgba(101 75 61 / 51%) 60%, rgba(255, 176, 123, 0) 100%);"></div>
-             <div class="walls" style="clip-path: polygon(85% 15%, 100% 0%, 100% 100%, 85% 65%);"></div>
-        </div>
+ <div class="room">
+     <!-- Пол (нижний блок) - темное дерево, светлее слева -->
+     <div class="floor" style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);background: linear-gradient(31deg, #75727074 0%, #454442bd 60%, #1a100a 100%);"></div>
+     
+     <!-- Потолок (верхний блок) - темно-серый, почти черный -->
+     <div class="floor" style="height:100%;clip-path: polygon(0% 0%, 100% 0%, 85% 15%, 15% 15%);background: linear-gradient(31deg, #2e2e2e 0%, #111111 100%);"></div>
+     
+     <!-- Левая стена (в тени) - черный/темно-серый -->
+     <div class="walls" style="clip-path: polygon(0% 0%, 15% 15%, 15% 65%, 0% 100%);background: linear-gradient(31deg, #1c1c1c 0%, #0f0f0f 100%);"></div>
+     
+     <!-- Правая стена (чуть светлее, с фактурой) - серый -->
+     <div class="walls" style="clip-path: polygon(85% 15%, 100% 0%, 100% 100%, 85% 65%);background: linear-gradient(31deg, #3a3a3a 0%, #1a1a1a 100%);"></div>
+</div>
         <!-- Изначально показываем сундук (или комнату с открытым сундуком) -->
         <div class="chest-view active" id="chestView">
             <!-- Сюда вставишь картинку комнаты/сундука (пока заглушка) -->
             <img src="chest.webp" alt="Сундук" class="room-image" id="chestImg">
-            <button class="bottom-btn" onclick="alert('Здесь будет переход куда-то дальше...')">Дальше</button>
+            <button class="bottom-btn" id="letterBtn" aria-label="Прочитать письмо">
+    <img src="letter.webp" alt="Письмо">
+</button>
         </div>
 
         <!-- Вид письма -->
@@ -52,7 +61,20 @@
             <button id="closeNameBtn" class="btn-secondary">Отмена</button>
         </div>
     </div>
-
+<div class="modal-overlay" id="letterModal">
+    <div class="letter-modal" role="dialog" aria-modal="true">
+        <button class="close-letter-btn" id="closeLetterModalBtn" aria-label="Закрыть">
+            <span></span><span></span>
+        </button>
+        <div class="letter-scroll">
+            <p>Пять дней, пять загадок, а результат — пыль и паутина...</p>
+            <p>Как же так.</p>
+            <p>Не ищите взломщика снаружи. Предатель всегда был среди нас, Совета. Восемь человек, и один из них возжелал чуть больше, чем положено.</p>
+            <p>Условие просто и элегантно. Если хотите увидеть свой подарок снова — назовите моё имя и попробуйте меня призвать.</p>
+            <p>Посмотрим, хватит ли у вас смелости выбрать, кого подозревать. Ответ на дне сундука. Удачи.</p>
+        </div>
+    </div>
+</div>
     <script src="room.js"></script>
 </body>
 </html>
